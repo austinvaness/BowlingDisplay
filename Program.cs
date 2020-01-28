@@ -21,26 +21,28 @@ namespace IngameScript
 {
     partial class Program : MyGridProgram
     {
-        // =========== Settings ===========
+        // ============= Settings =============
         // The name of the panel to use as a display.
         // Leave as blank to select the first available display.
         readonly string panelName = "";
+        // ====================================
 
-        // When true, the score <number> command will use the specified number as the
-        // number of pins that are still standing.
-        // When false, the score <number> command will use the specified number as the
-        // number of pins that have been knocked down.
-        readonly bool invertInput = false;
-        // ================================
-
-        // =========== Commands ===========
+        // ============= Commands =============
+        // Commands are used by running the program block with an argument.
         // next : Selects the next player.
         // remove : Removes a score from the selected player.
         // clear : Removes all scores from the selected player.
-        // score <number> : Adds a score to the selected player.
-        //          The number is either the number of pins remaining, or
-        //          the number of pins knocked down depending on the invertInput setting.
-        // ================================
+        // score <number> : Adds a score to the selected player. Use after a player has delivered a ball.
+        //          <number> is the number of pins that where knocked down.
+        // pins <number> : Adds a score to the selected player. Use after a player has delivered a ball.
+        //          <number> is the number of pins that are still up.
+        // ====================================
+
+        // ============ CustomData ============
+        // The CustomData of the program block must store the names
+        // of the players, 1 per line.
+        // ====================================
+
 
 
 
@@ -120,10 +122,18 @@ namespace IngameScript
                         int n;
                         if (args.Length > 1 && int.TryParse(args [1], out n))
                         {
-                            if (invertInput)
-                                players [currPlayer].Bowl(n);
-                            else
-                                players [currPlayer].Bowl(10 - n);
+                            players [currPlayer].Bowl(10 - n);
+                            Render();
+                        }
+                    }
+                    return;
+                case "pins":
+                    if(players.Length > 0)
+                    {
+                        int n;
+                        if (args.Length > 1 && int.TryParse(args [1], out n))
+                        {
+                            players [currPlayer].Bowl(n);
                             Render();
                         }
                     }
